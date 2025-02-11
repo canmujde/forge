@@ -29,27 +29,32 @@ PoolManager.ReturnObject(id, ball); (string, GameObject)
 
 ### Usage
 ```csharp
-private void Start()
-{
-    EventManager<int>.Subscribe("OnPlayerDeath", OnPlayerDeath);
-}
-
-private void OnDestroy()
-{
-    EventManager<int>.Unsubscribe("OnPlayerDeath", OnPlayerDeath);
-}
-
-private void Update()
-{
-    if (Input.GetKeyDown(KeyCode.K))
+    public class Player : MonoBehaviour
     {
-        EventManager<int>.Trigger("OnPlayerDeath", 100);
+        private float health;
+        
+        private void Start()
+        {
+            EventManager<float>.Subscribe("OnPlayerDamaged", OnPlayerDamaged);
+        }
+        private void OnDestroy()
+        {
+            EventManager<float>.Unsubscribe("OnPlayerDamaged", OnPlayerDamaged);
+        }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                EventManager<float>.Trigger("OnPlayerDamaged", 5);
+            }
+        }
+        
+        
+        private void OnPlayerDamaged(float damage)
+        {
+            health -= damage;
+            Debug.Log("My health is after damage : " + health);
+        }
     }
-}
-
-private void OnPlayerDeath(int sc)
-{
-Debug.Log("Im dead! my score is : " + sc);
-}
 ```
 
