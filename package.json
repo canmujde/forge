@@ -1,0 +1,14 @@
+{
+  "name": "com.canmujde.forge",
+  "version": "0.0.0",
+  "displayName": "A unity package",
+  "description": "A brief description of what my package does.",
+  "dependencies": {
+    
+  },
+  "author": {
+    "name": "Can Mujde",
+    "email": "can.mujde@icloud.com",
+    "url": "canmujde.com"
+  }
+}
