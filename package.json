@@ -1,8 +1,8 @@
 {
   "name": "com.canmujde.forge",
-  "version": "0.0.0",
-  "displayName": "A unity package",
-  "description": "A brief description of what my package does.",
+  "version": "0.0.1",
+  "displayName": "Forge",
+  "description": "Makes things easier",
   "dependencies": {
     
   },
