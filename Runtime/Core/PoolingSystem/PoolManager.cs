@@ -14,6 +14,7 @@ namespace Core.PoolingSystem
         {
             _poolableObjects = Resources.LoadAll<PoolableScriptableObject>("PoolableObjects");
             _poolParent = new GameObject("_Pool").transform;
+            _poolParent.hideFlags = HideFlags.HideInHierarchy;
             foreach (var poolableData in _poolableObjects)
             {
                 if (poolableData.prefab == null) continue;
