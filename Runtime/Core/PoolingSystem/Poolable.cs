@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace Runtime.Core.PoolingSystem
+namespace Core.PoolingSystem
 {
     public class Poolable : MonoBehaviour, IPoolable
     {

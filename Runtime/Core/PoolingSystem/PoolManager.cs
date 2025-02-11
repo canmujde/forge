@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Runtime.Config;
+using Config;
 using UnityEngine;
 
-namespace Runtime.Core.PoolingSystem
+namespace Core.PoolingSystem
 {
     public static class PoolManager
     {

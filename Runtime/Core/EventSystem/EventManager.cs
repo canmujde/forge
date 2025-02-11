@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Runtime.Core.EventSystem
+namespace Core.EventSystem
 {
     public static class EventManager<T>
     {

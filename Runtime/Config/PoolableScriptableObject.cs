@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Runtime.Config
+namespace Config
 {
     [CreateAssetMenu(fileName = "Poolable", menuName = "ScriptableObjects/Poolable")]
     public class PoolableScriptableObject : ScriptableObject
