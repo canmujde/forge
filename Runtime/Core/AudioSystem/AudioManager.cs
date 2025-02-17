@@ -7,17 +7,93 @@ namespace Core.AudioSystem
     public static class AudioManager
     {
         private static readonly Queue<AudioSource> SourcePool = new Queue<AudioSource>();
+        private static readonly AudioSource BackgroundMusic;
         private const int SourceLimit = 75;
+        private const float BackgroundTransitionDuration = 3f;
 
         static AudioManager()
         {
+            BackgroundMusic = new GameObject("BackgroundMusic", typeof(AudioSource))
+            {
+                hideFlags = HideFlags.HideInHierarchy
+            }.GetComponent<AudioSource>();
+            Object.DontDestroyOnLoad(BackgroundMusic.gameObject);
+            SetToDefault(BackgroundMusic, Default2D);
+            BackgroundMusic.loop = true;
             for (int i = 0; i < SourceLimit; i++)
             {
-                SourcePool.Enqueue(new GameObject("AudioSource", typeof(AudioSource))
+                var source = new GameObject("AudioSource", typeof(AudioSource))
                 {
                     hideFlags = HideFlags.HideInHierarchy
-                }.GetComponent<AudioSource>());
+                }.GetComponent<AudioSource>();
+                
+                Object.DontDestroyOnLoad(source.gameObject);
+                SourcePool.Enqueue(source);
             }
+        }
+
+        public static async void PlayBackgroundMusic(string clipName, bool transition)
+        {
+            var clip = Resources.Load<AudioClip>($"Audio/{clipName}");
+            if (clip==null)
+            {
+                Debug.LogWarning($"Background clip {clipName} not found");
+                return;
+            }
+
+            if (!transition)
+            {
+                BackgroundMusic.volume = 1f;
+                BackgroundMusic.clip = clip;
+                BackgroundMusic.Play();
+                return;
+            }
+
+
+            if (BackgroundMusic.isPlaying)
+            {
+                var temp = new GameObject("BackgroundMusicTemp", typeof(AudioSource))
+                {
+                    hideFlags = HideFlags.HideInHierarchy
+                }.GetComponent<AudioSource>();
+                SetToDefault(temp, Default2D);
+                temp.loop = true;
+                temp.clip = BackgroundMusic.clip;
+                temp.time = BackgroundMusic.time;
+                temp.volume = 0.5f;
+                BackgroundMusic.volume = 0.5f;
+                temp.Play();
+
+                await Task.Delay(10);
+                var startVolume = temp.volume;
+
+                BackgroundMusic.volume = 0f;
+                BackgroundMusic.clip = clip;
+                BackgroundMusic.Play();
+                
+                for (float t = 0; t < BackgroundTransitionDuration; t += Time.deltaTime)
+                {
+                    temp.volume = Mathf.Lerp(startVolume, 0f, t / BackgroundTransitionDuration);
+                    BackgroundMusic.volume = Mathf.Lerp(0f, 1f, t / BackgroundTransitionDuration);
+                    await Task.Yield();
+                }
+                BackgroundMusic.volume = 1f;
+            }
+            else
+            {
+                BackgroundMusic.volume = 0f;
+                BackgroundMusic.clip = clip;
+                BackgroundMusic.Play();
+            
+                for (float t = 0; t < BackgroundTransitionDuration; t += Time.deltaTime)
+                {
+                    BackgroundMusic.volume = Mathf.Lerp(0f, 1f, t / BackgroundTransitionDuration);
+                    await Task.Yield();
+                }
+
+                BackgroundMusic.volume = 1f;
+            }
+            
         }
 
         public static void Play2D(string clipName)
