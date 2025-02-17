@@ -5,30 +5,39 @@ namespace Core.EventSystem
 {
     public static class EventManager<T>
     {
-        private static Dictionary<string, Action<T>> eventDictionary = new Dictionary<string, Action<T>>();
+        private class EventWrapper
+        {
+            public event Action<T> Event = delegate { };
+
+            public void Invoke(T data) => Event?.Invoke(data);
+            public void Subscribe(Action<T> listener) => Event += listener;
+            public void Unsubscribe(Action<T> listener) => Event -= listener;
+        }
+
+        private static readonly Dictionary<string, EventWrapper> EventDictionary = new Dictionary<string, EventWrapper>();
 
         public static void Subscribe(string eventName, Action<T> listener)
         {
-            if (!eventDictionary.ContainsKey(eventName))
+            if (!EventDictionary.ContainsKey(eventName))
             {
-                eventDictionary[eventName] = delegate { };
+                EventDictionary[eventName] = new EventWrapper();
             }
-            eventDictionary[eventName] += listener;
+            EventDictionary[eventName].Subscribe(listener);
         }
 
         public static void Unsubscribe(string eventName, Action<T> listener)
         {
-            if (eventDictionary.ContainsKey(eventName))
+            if (EventDictionary.TryGetValue(eventName, out var wrapper))
             {
-                eventDictionary[eventName] -= listener;
+                wrapper.Unsubscribe(listener);
             }
         }
 
         public static void Trigger(string eventName, T eventData)
         {
-            if (eventDictionary.ContainsKey(eventName))
+            if (EventDictionary.TryGetValue(eventName, out var wrapper))
             {
-                eventDictionary[eventName]?.Invoke(eventData);
+                wrapper.Invoke(eventData);
             }
         }
     }
