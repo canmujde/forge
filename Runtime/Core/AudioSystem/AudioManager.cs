@@ -17,6 +17,7 @@ namespace Core.AudioSystem
             {
                 hideFlags = HideFlags.HideInHierarchy
             }.GetComponent<AudioSource>();
+            
             Object.DontDestroyOnLoad(BackgroundMusic.gameObject);
             SetToDefault(BackgroundMusic, Default2D);
             BackgroundMusic.loop = true;
@@ -26,16 +27,26 @@ namespace Core.AudioSystem
                 {
                     hideFlags = HideFlags.HideInHierarchy
                 }.GetComponent<AudioSource>();
-                
+
                 Object.DontDestroyOnLoad(source.gameObject);
                 SourcePool.Enqueue(source);
             }
         }
 
+        public static AudioSource ReserveAudioSource()
+        {
+            return SourcePool.Count > 0 ? SourcePool.Dequeue() : null;
+        }
+
+        public static void EnqueueAudioSource(AudioSource source)
+        {
+            SourcePool.Enqueue(source);
+        }
+
         public static async void PlayBackgroundMusic(string clipName, bool transition)
         {
             var clip = Resources.Load<AudioClip>($"Audio/{clipName}");
-            if (clip==null)
+            if (clip == null)
             {
                 Debug.LogWarning($"Background clip {clipName} not found");
                 return;
@@ -70,13 +81,14 @@ namespace Core.AudioSystem
                 BackgroundMusic.volume = 0f;
                 BackgroundMusic.clip = clip;
                 BackgroundMusic.Play();
-                
+
                 for (float t = 0; t < BackgroundTransitionDuration; t += Time.deltaTime)
                 {
                     temp.volume = Mathf.Lerp(startVolume, 0f, t / BackgroundTransitionDuration);
                     BackgroundMusic.volume = Mathf.Lerp(0f, 1f, t / BackgroundTransitionDuration);
                     await Task.Yield();
                 }
+
                 BackgroundMusic.volume = 1f;
             }
             else
@@ -84,7 +96,7 @@ namespace Core.AudioSystem
                 BackgroundMusic.volume = 0f;
                 BackgroundMusic.clip = clip;
                 BackgroundMusic.Play();
-            
+
                 for (float t = 0; t < BackgroundTransitionDuration; t += Time.deltaTime)
                 {
                     BackgroundMusic.volume = Mathf.Lerp(0f, 1f, t / BackgroundTransitionDuration);
@@ -93,7 +105,6 @@ namespace Core.AudioSystem
 
                 BackgroundMusic.volume = 1f;
             }
-            
         }
 
         public static void Play2D(string clipName)
@@ -237,7 +248,7 @@ namespace Core.AudioSystem
                 }
             }
         }
-        
+
         public static void Play3D(string clipName, Vector3 position, float volume)
         {
             volume = Mathf.Clamp(volume, 0, 1);
@@ -265,11 +276,11 @@ namespace Core.AudioSystem
                 }
             }
         }
-        
+
         public static void Play3DPitched(string clipName, Vector3 position, float pitch)
         {
             pitch = Mathf.Clamp(pitch, -3, 3);
-            
+
             var source = SourcePool.Dequeue();
 
             if (source == null)
@@ -294,17 +305,17 @@ namespace Core.AudioSystem
                 }
             }
         }
-        
+
         public static void Play3DTrimmed(string clipName, Vector3 position, float start = 0.0f, float end = 1.0f)
         {
             start = Mathf.Clamp(start, 0f, 1f);
             end = Mathf.Clamp(end, 0f, 1f);
-            
+
             if (start > end)
             {
                 start = Mathf.Max(0f, end - 0.1f);
             }
-            
+
             var source = SourcePool.Dequeue();
 
             if (source == null)
@@ -357,9 +368,9 @@ namespace Core.AudioSystem
         private static async void ReturnSourceToPoolAfterDelay(AudioSource source, float delay)
         {
             if (!source) return;
-            
+
             await Task.Delay((int)(delay * 1000));
-            
+
             source.Stop();
             source.clip = null;
             SourcePool.Enqueue(source);
