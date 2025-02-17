@@ -76,10 +76,9 @@ AudioManager.Play2D("CoinEarned", volume);
 AudioManager.Play2DPitched("CoinEarned", pitch);
 ```
 ```csharp
-AudioManager.Play2DTrimmed("CoinEarned", start = 0.5f, end = 1.0f);
+AudioManager.Play2DTrimmed("CoinEarned", start, end);
 // passing 0.5f as start means clip will start from half of it's length.
 ```
-
 ```csharp
 AudioManager.Play3D("PlayerGotDamage", transform.position);
 ```
@@ -90,10 +89,11 @@ AudioManager.Play3D("PlayerGotDamage", transform.position, volume);
 AudioManager.Play3DPitched("PlayerGotDamage", transform.position, pitch);
 ```
 ```csharp
-AudioManager.Play3DPitched("PlayerGotDamage", transform.position, start = 0.5f, end = 1.0f);
+AudioManager.Play3DTrimmed("PlayerGotDamage", transform.position, start, end);
 // passing 0.5f as start means clip will start from half of it's length.
 ```
-
-
-
+```csharp
+AudioManager.PlayBackgroundMusic(clipName, transition);
+//send true as 2nd parameter if you want transition
+```
 
