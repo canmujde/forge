@@ -6,34 +6,32 @@ namespace Core.PoolingSystem
 {
     public static class PoolManager
     {
-        private static PoolableScriptableObject[] _poolableObjects;
-        private static Dictionary<string, ObjectPool> _pools = new Dictionary<string, ObjectPool>();
-        private static Transform _poolParent;
+        private static readonly Dictionary<string, ObjectPool> Pools = new Dictionary<string, ObjectPool>();
 
         static PoolManager()
         {
-            _poolableObjects = Resources.LoadAll<PoolableScriptableObject>("PoolableObjects");
-            _poolParent = new GameObject("_Pool").transform;
-            _poolParent.hideFlags = HideFlags.HideInHierarchy;
-            foreach (var poolableData in _poolableObjects)
+            var poolableObjects = Resources.LoadAll<PoolableScriptableObject>("PoolableObjects");
+            var poolParent = new GameObject("_Pool").transform;
+            poolParent.hideFlags = HideFlags.HideInHierarchy;
+            foreach (var poolableData in poolableObjects)
             {
                 if (poolableData.prefab == null) continue;
-                CreatePool(poolableData.prefab.name, poolableData.prefab, poolableData.initialSize, _poolParent, poolableData.expandable);
+                CreatePool(poolableData.prefab.name, poolableData.prefab, poolableData.initialSize, poolParent, poolableData.expandable);
             }
             Debug.Log("Pool Manager initialized");
         }
 
         private static void CreatePool(string key, GameObject prefab, int initialSize, Transform parent = null, bool expandable = true)
         {
-            if (!_pools.ContainsKey(key))
+            if (!Pools.ContainsKey(key))
             {
-                _pools[key] = new ObjectPool(prefab, initialSize, parent, expandable);
+                Pools[key] = new ObjectPool(prefab, initialSize, parent, expandable);
             }
         }
 
         public static void RemoveObject(string key)
         {
-            if (_pools.TryGetValue(key, out var pool))
+            if (Pools.TryGetValue(key, out var pool))
             {
                 pool.FindNullsAndRemove();
             }
@@ -41,16 +39,22 @@ namespace Core.PoolingSystem
 
         public static GameObject GetObject(string key)
         {
-            if (_pools.TryGetValue(key, out var pool))
+            return Pools.TryGetValue(key, out var pool) ? pool.Get() : null;
+        }
+        public static GameObject GetObject(string key, Transform setParent)
+        {
+            if (Pools.TryGetValue(key, out var pool))
             {
-                return pool.Get();
+                var get = pool.Get();
+                get.transform.SetParent(setParent);
+                return get;
             }
             return null;
         }
 
         public static void ReturnObject(string key, GameObject obj)
         {
-            if (_pools.TryGetValue(key, out var pool))
+            if (Pools.TryGetValue(key, out var pool))
             {
                 pool.ReturnToPool(obj);
             }
