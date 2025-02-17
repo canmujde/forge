@@ -101,7 +101,7 @@ namespace Core.AudioSystem
             }
         }
 
-        public static void Play2DRanged(string clipName, float start = 0.0f, float end = 1.0f)
+        public static void Play2DTrimmed(string clipName, float start = 0.0f, float end = 1.0f)
         {
             start = Mathf.Clamp(start, 0f, 1f);
             end = Mathf.Clamp(end, 0f, 1f);
@@ -158,6 +158,98 @@ namespace Core.AudioSystem
                     source.gameObject.transform.position = position;
                     source.Play();
                     ReturnSourceToPoolAfterDelay(source, clip.length);
+                }
+            }
+        }
+        
+        public static void Play3D(string clipName, Vector3 position, float volume)
+        {
+            volume = Mathf.Clamp(volume, 0, 1);
+            var source = SourcePool.Dequeue();
+
+            if (source == null)
+            {
+                Debug.LogWarning("AudioSource pool is empty");
+            }
+            else
+            {
+                var clip = Resources.Load<AudioClip>($"Audio/{clipName}");
+                if (clip == null)
+                {
+                    Debug.LogWarning("Audio clip not found");
+                }
+                else
+                {
+                    SetToDefault(source, Default3D);
+                    source.clip = clip;
+                    source.volume = volume;
+                    source.gameObject.transform.position = position;
+                    source.Play();
+                    ReturnSourceToPoolAfterDelay(source, clip.length);
+                }
+            }
+        }
+        
+        public static void Play3DPitched(string clipName, Vector3 position, float pitch)
+        {
+            pitch = Mathf.Clamp(pitch, -3, 3);
+            
+            var source = SourcePool.Dequeue();
+
+            if (source == null)
+            {
+                Debug.LogWarning("AudioSource pool is empty");
+            }
+            else
+            {
+                var clip = Resources.Load<AudioClip>($"Audio/{clipName}");
+                if (clip == null)
+                {
+                    Debug.LogWarning("Audio clip not found");
+                }
+                else
+                {
+                    SetToDefault(source, Default3D);
+                    source.clip = clip;
+                    source.pitch = pitch;
+                    source.gameObject.transform.position = position;
+                    source.Play();
+                    ReturnSourceToPoolAfterDelay(source, clip.length);
+                }
+            }
+        }
+        
+        public static void Play3DTrimmed(string clipName, Vector3 position, float start = 0.0f, float end = 1.0f)
+        {
+            start = Mathf.Clamp(start, 0f, 1f);
+            end = Mathf.Clamp(end, 0f, 1f);
+            
+            if (start > end)
+            {
+                start = Mathf.Max(0f, end - 0.1f);
+            }
+            
+            var source = SourcePool.Dequeue();
+
+            if (source == null)
+            {
+                Debug.LogWarning("AudioSource pool is empty");
+            }
+            else
+            {
+                var clip = Resources.Load<AudioClip>($"Audio/{clipName}");
+                if (clip == null)
+                {
+                    Debug.LogWarning("Audio clip not found");
+                }
+                else
+                {
+                    SetToDefault(source, Default3D);
+                    source.clip = clip;
+                    source.time = start * clip.length;
+                    source.gameObject.transform.position = position;
+                    source.Play();
+                    ReturnSourceToPoolAfterDelay(source, end * clip.length - start * clip.length);
                 }
             }
         }
