@@ -65,35 +65,67 @@ public class Player : MonoBehaviour
 
 ### Usage
 
-
+* **Play 2D sound**
 ```csharp
 AudioManager.Play2D("CoinEarned");
 ```
+* **Play 2D sound and set volume**
 ```csharp
 AudioManager.Play2D("CoinEarned", volume);
 ```
+* **Play 2D sound pitched. Pass pitch value as second parameter of method.**
 ```csharp
 AudioManager.Play2DPitched("CoinEarned", pitch);
 ```
+* #### Play 2D sound trimmed. Play specific portion of your AudioClip. Pass the start and end parameters between 0 and 1. 
+**Example:** Assuming the length of your clip is 3 seconds. You've passed 0.5f as the start parameter and 1.0f as the end parameter, it will play from the one and a half second to the 3rd second.
 ```csharp
 AudioManager.Play2DTrimmed("CoinEarned", start, end);
-// passing 0.5f as start means clip will start from half of it's length.
 ```
+* **Play 3D sound**
 ```csharp
 AudioManager.Play3D("PlayerGotDamage", transform.position);
 ```
+* **Play 3D sound and set volume**
 ```csharp
 AudioManager.Play3D("PlayerGotDamage", transform.position, volume);
 ```
+* **Play 3D sound pitched. Pass pitch value as second parameter of method.**
 ```csharp
 AudioManager.Play3DPitched("PlayerGotDamage", transform.position, pitch);
 ```
+* #### Play 3D sound trimmed. Play specific portion of your AudioClip. Pass the start and end parameters between 0 and 1.
+
+**Example:** Assuming the length of your clip is 3 seconds. You've passed 0.5f as the start parameter and 1.0f as the end parameter, it will play from the one and a half second to the 3rd second.
 ```csharp
 AudioManager.Play3DTrimmed("PlayerGotDamage", transform.position, start, end);
-// passing 0.5f as start means clip will start from half of it's length.
 ```
+* **Play BGMs. Add true as second parameter to give it a transition effect.**
 ```csharp
 AudioManager.PlayBackgroundMusic(clipName, transition);
-//send true as 2nd parameter if you want transition
 ```
+
+* **You can reserve AudioSource from AudioManager and use however you want.**
+```csharp
+public class PlayerSounds : MonoBehaviour
+{
+    private AudioSource playerMovementAudioSource;
+    
+    private void Start()
+    {
+        playerMovementAudioSource = AudioManager.ReserveAudioSource();
+    }
+    
+    private void OnMove()
+    {
+        if (playerMovementAudioSource && !playerMovementAudioSource.isPlaying)
+            playerMovementAudioSource.Play();
+    }
+}
+```
+* **Enqueue your reserved AudioSource**
+```csharp
+AudioManager.EnqueueAudioSource(playerMovementAudioSource);
+```
+
 
