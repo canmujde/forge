@@ -6,14 +6,14 @@ namespace Core.AudioSystem
 {
     public static class AudioManager
     {
-        private static Queue<AudioSource> _sourcePool = new Queue<AudioSource>();
+        private static readonly Queue<AudioSource> SourcePool = new Queue<AudioSource>();
         private const int SourceLimit = 75;
 
         static AudioManager()
         {
             for (int i = 0; i < SourceLimit; i++)
             {
-                _sourcePool.Enqueue(new GameObject("AudioSource", typeof(AudioSource))
+                SourcePool.Enqueue(new GameObject("AudioSource", typeof(AudioSource))
                 {
                     hideFlags = HideFlags.HideInHierarchy
                 }.GetComponent<AudioSource>());
@@ -22,7 +22,7 @@ namespace Core.AudioSystem
 
         public static void Play2D(string clipName)
         {
-            var source = _sourcePool.Dequeue();
+            var source = SourcePool.Dequeue();
 
             if (source == null)
             {
@@ -49,7 +49,7 @@ namespace Core.AudioSystem
         {
             volume = Mathf.Clamp(volume, 0, 1);
 
-            var source = _sourcePool.Dequeue();
+            var source = SourcePool.Dequeue();
 
             if (source == null)
             {
@@ -77,7 +77,7 @@ namespace Core.AudioSystem
         {
             pitch = Mathf.Clamp(pitch, -3, 3);
 
-            var source = _sourcePool.Dequeue();
+            var source = SourcePool.Dequeue();
 
             if (source == null)
             {
@@ -111,7 +111,7 @@ namespace Core.AudioSystem
                 start = Mathf.Max(0f, end - 0.1f);
             }
 
-            var source = _sourcePool.Dequeue();
+            var source = SourcePool.Dequeue();
 
             if (source == null)
             {
@@ -138,7 +138,7 @@ namespace Core.AudioSystem
 
         public static void Play3D(string clipName, Vector3 position)
         {
-            var source = _sourcePool.Dequeue();
+            var source = SourcePool.Dequeue();
 
             if (source == null)
             {
@@ -194,7 +194,7 @@ namespace Core.AudioSystem
             
             source.Stop();
             source.clip = null;
-            _sourcePool.Enqueue(source);
+            SourcePool.Enqueue(source);
         }
 
 
