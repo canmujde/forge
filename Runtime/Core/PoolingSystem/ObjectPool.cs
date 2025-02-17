@@ -5,10 +5,10 @@ namespace Core.PoolingSystem
 {
     public class ObjectPool
     {
-        private Queue<GameObject> _pool = new Queue<GameObject>();
-        private GameObject _prefab;
-        private Transform _parent;
-        private bool _expandable;
+        private readonly Queue<GameObject> _pool = new Queue<GameObject>();
+        private readonly GameObject _prefab;
+        private readonly Transform _parent;
+        private readonly bool _expandable;
 
         public ObjectPool(GameObject prefab, int initialSize, Transform parent = null, bool expandable = true)
         {
