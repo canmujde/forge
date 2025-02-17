@@ -1,9 +1,6 @@
 # Forge
 
-
-
-
-# Features
+Forge is a robust and extensible Unity library designed to streamline Unity development by providing essential tools, modular components, and optimized workflows. Built with scalability, performance, and flexibility in mind, this library helps developers maintain a clean and efficient project structure while minimizing repetitive coding tasks.
 
 ## Pool Manager
 
