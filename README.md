@@ -2,7 +2,13 @@
 
 Forge is a robust and extensible Unity library designed to streamline Unity development by providing essential tools, modular components, and optimized workflows. Built with scalability, performance, and flexibility in mind, this library helps developers maintain a clean and efficient project structure while minimizing repetitive coding tasks.
 
-## Pool Manager
+## Features
+
+* Managers: Static Manager classes such as PoolManager.
+* Extension Methods: Extend Unity and C# built-in types with additional functionalities.
+* Attributes: Button Attribute
+
+### Pool Manager
 
 You can variate pool objects by creating PoolableScriptableObject asset under Resources>PoolableObjects.
 
@@ -14,13 +20,13 @@ Note: Poolable objects will be given their id as their prefab game object's name
 
 ### Usage
 
-#### Retrieve
+Retrieve
 
 ```csharp
 var cube = PoolManager.GetObject("Ball");
 ```
 
-#### Repool
+Repool
 ```csharp
 PoolManager.ReturnObject(id, ball); (string, GameObject)
 ```
