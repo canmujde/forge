@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Config;
 using UnityEngine;
 
-namespace Core.PoolingSystem
+namespace PoolingSystem
 {
     public static class PoolManager
     {

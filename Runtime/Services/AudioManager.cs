@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DataModels;
 using UnityEngine;
 
-namespace Core.AudioSystem
+namespace Services
 {
     public static class AudioManager
     {

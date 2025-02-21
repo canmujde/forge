@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using UnityEngine;
 
-namespace Core.SaveSystem
+namespace Services
 {
     public static class DataManager
     {

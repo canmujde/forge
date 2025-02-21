@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Core.AudioSystem
+namespace DataModels
 {
     [System.Serializable]
     public class AudioSourceProperties

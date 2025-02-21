@@ -1,4 +1,4 @@
-namespace Core.PoolingSystem
+namespace PoolingSystem
 {
     public interface IPoolable
     {
